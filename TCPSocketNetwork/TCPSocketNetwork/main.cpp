@@ -1,11 +1,11 @@
 #include <stdio.h>
+#include <iostream>
 #include <WinSock2.h>
 
 #pragma comment(lib, "ws2_32")
 
 #define PORT 4578
 #define PACKET_SIZE 1024
-#define SERVER_IP "192.168.35.106"
 
 int main()
 {
@@ -27,13 +27,17 @@ int main()
 	int iClntSize = sizeof(tClnAddr);
 	SOCKET hClient = accept(hListen, (SOCKADDR*)&tClnAddr, &iClntSize);
 
-	char cBuffer[PACKET_SIZE] = {};
-	recv(hClient, cBuffer, PACKET_SIZE, 0);
-	printf("Recv Msg: %s\n", cBuffer);
+	while (true)
+	{
+		char cBuffer[PACKET_SIZE] = {};
+		recv(hClient, cBuffer, PACKET_SIZE, 0);
+		printf("Recv Msg: %s\n", cBuffer);
 
-	char cMsg[] = "Server Send";
-	send(hClient, cMsg, strlen(cMsg), 0);
-
+		char cMsg[] = "";
+		std::cin >> cMsg;
+		send(hClient, cMsg, strlen(cMsg), 0);
+	}
+	
 	closesocket(hClient);
 	closesocket(hListen);
 
