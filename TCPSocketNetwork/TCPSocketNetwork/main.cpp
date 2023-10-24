@@ -5,6 +5,7 @@
 
 #define PORT 4578
 #define PACKET_SIZE 1024
+#define SERVER_IP "192.168.35.106"
 
 int main()
 {
@@ -21,6 +22,20 @@ int main()
 
 	bind(hListen, (SOCKADDR*)&tListenAddr, sizeof(tListenAddr));
 	listen(hListen, SOMAXCONN);
+
+	SOCKADDR tClnAddr = {};
+	int iClntSize = sizeof(tClnAddr);
+	SOCKET hClient = accept(hListen, (SOCKADDR*)&tClnAddr, &iClntSize);
+
+	char cBuffer[PACKET_SIZE] = {};
+	recv(hClient, cBuffer, PACKET_SIZE, 0);
+	printf("Recv Msg: %s\n", cBuffer);
+
+	char cMsg[] = "Server Send";
+	send(hClient, cMsg, strlen(cMsg), 0);
+
+	closesocket(hClient);
+	closesocket(hListen);
 
 	WSACleanup();
 	return EXIT_SUCCESS;
